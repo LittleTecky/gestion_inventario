@@ -5,7 +5,7 @@ from typing import Optional
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Cargar las variables de entorno desde el archivo .env
+load_dotenv()
 
 # Cargar la clave secreta para firmar los JWTs desde el archivo .env
 SECRET_KEY = os.getenv("SECRET_KEY", "mi_clave_secreta")

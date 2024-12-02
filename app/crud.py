@@ -5,7 +5,7 @@ from typing import Optional
 
 # Crear un nuevo usuario
 def create_user(db: Session, user: schemas.UserCreate):
-    hashed_password = security.hash_password(user.password)  # Asegúrate de implementar hash_password
+    hashed_password = security.hash_password(user.password)  
     db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
     db.add(db_user)
     db.commit()
