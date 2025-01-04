@@ -4,22 +4,32 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Cargar las variables de entorno desde el archivo .env
+load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# URLs para las dos bases de datos
+USER_DATABASE_URL = os.getenv("USER_DATABASE_URL")  # Base de datos para usuarios
+INVENTORY_DATABASE_URL = os.getenv("INVENTORY_DATABASE_URL")  # Base de datos para inventario
 
-# Crear el motor de la base de datos
-engine = create_engine(DATABASE_URL)
+# Motores de bases de datos
+user_engine = create_engine(USER_DATABASE_URL)
+inventory_engine = create_engine(INVENTORY_DATABASE_URL)
 
-# Crear una clase base para los modelos
-Base = declarative_base()
+# Bases para cada conjunto de modelos
+UserBase = declarative_base()  # Modelos de usuario
+InventoryBase = declarative_base()  # Modelos de inventario
 
-# Crear una fábrica de sesiones
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+UserSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=user_engine)
+InventorySessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=inventory_engine)
 
-# Función para obtener la sesión de base de datos
-def get_db():
-    db = SessionLocal()
+def get_user_db():
+    db = UserSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def get_inventory_db():
+    db = InventorySessionLocal()
     try:
         yield db
     finally:

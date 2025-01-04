@@ -2,7 +2,7 @@
 
 ## Descripción del Proyecto
 
-Este proyecto consiste en una API RESTful para la gestión de inventarios de productos, categorías y usuarios. La aplicación permite realizar operaciones CRUD sobre productos, categorías y usuarios, con autenticación JWT para proteger algunos endpoints.
+Este proyecto consiste en una API RESTful para la gestión de inventarios, que incluye operaciones CRUD sobre productos, categorías y usuarios. La API utiliza autenticación JWT para proteger endpoints y separa las bases de datos de usuarios e inventario.
 
 ## Tecnologías Utilizadas
 
@@ -13,120 +13,170 @@ Este proyecto consiste en una API RESTful para la gestión de inventarios de pro
 - **JWT** para autenticación
 - **Docker** para la contenedorización
 
-## Instrucciones para Configurar el Entorno de Desarrollo
+---
 
-### 1. Clonar el Repositorio
+## Ejecución del Proyecto
 
-```bash
-git clone https://github.com/tu_usuario/gestion-inventario.git
-cd gestion-inventario
-```
-### 2. Crear un Entorno Virtual
+### 1. Ejecución Local
 
-```bash
-python -m venv env
-env\Scripts\activate
-```
+#### Requisitos Previos
 
-### 3. Instalar las Dependencias
+- Python 3.11 o superior
+- PostgreSQL instalado y configurado
 
-```bash
-pip install -r requirements.txt
-```
+#### Pasos
 
-### 4. Crear la Base de Datos y Tablas
+1. **Clonar el Repositorio**
+   ```bash
+   git clone https://github.com/tu_usuario/gestion-inventario.git
+   cd gestion-inventario
+   ```
 
-Ejecute el siguiente script en la terminal de PostgreSQL:
+2. **Configurar el Entorno Virtual**
+   ```bash
+   python -m venv env
+   source env/bin/activate  # Linux/macOS
+   env\Scripts\activate   # Windows
+   ```
 
-```bash
-CREATE DATABASE inventory;
-```
+3. **Instalar Dependencias**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-A continuación ejecute el siguiente script en :
+4. **Configurar Variables de Entorno**
+   Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+   ```dotenv
+   USER_DATABASE_URL=postgresql://postgres:password@localhost/usuarios
+   INVENTORY_DATABASE_URL=postgresql://postgres:password@localhost/inventario
+   SECRET_KEY=tu_clave_secreta
+   ```
 
-```bash
-python creartablas.py
-```
+5. **Crear las Bases de Datos**
+   Ejecutar los siguientes comandos en la terminal de PostgreSQL:
+   ```sql
+   CREATE DATABASE usuarios;
+   CREATE DATABASE inventario;
+   ```
 
-### 5. Configuración de Variables de Entorno
-asegúrese de tener el archivo .env en la raíz del proyecto con las siguientes variables:
-```dotenv
-# Para ejecutar localmente
-DATABASE_URL=postgresql://postgres:1993@localhost/inventory
-SECRET_KEY=mi_clave_secreta
+6. **Crear las Tablas**
+   ```bash
+   python creartablas.py
+   ```
 
-# Para ejecutar usando Docker
-DATABASE_URL=postgresql://postgres:1993@db/inventory
-SECRET_KEY=mi_clave_secreta
-```
+7. **Iniciar la Aplicación**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
-## Instrucciones para Ejecutar la Aplicación Localmente
+8. **Acceder a la API**
+   La API estará disponible en [http://127.0.0.1:8000](http://127.0.0.1:8000). Puedes explorar los endpoints en la documentación interactiva: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
-#### 1. Ejecutar la API con Uvicorn:
+---
 
-```bash
-uvicorn app.main:app --reload
-```
-#### 2. La API estará disponible en http://127.0.0.1:8000.
+### 2. Despliegue con Docker
 
-Documentación Interactiva
-Accede a la documentación interactiva de la API en http://127.0.0.1:8000/docs, donde podrás probar todos los endpoints de la API.
+#### Requisitos Previos
 
-## Instrucciones para Desplegar la Aplicación Usando Docker
+- Docker y Docker Compose instalados
 
-#### 1. Crear los Contenedores Docker
+#### Pasos
 
-```bash
-docker-compose up --build
-```
+1. **Clonar el Repositorio**
+   ```bash
+   git clone https://github.com/tu_usuario/gestion-inventario.git
+   cd gestion_inventario
+   ```
 
-#### 2. La Aplicación Estará Disponible en
+2. **Configurar Variables de Entorno**
+   Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+   ```dotenv
+   USER_DATABASE_URL=postgresql://postgres:password@db/usuarios
+   INVENTORY_DATABASE_URL=postgresql://postgres:password@db/inventario
+   SECRET_KEY=tu_clave_secreta
+   ```
 
-```bash
-http://127.0.0.1:8000
-```
-La base de datos PostgreSQL estará disponible en el puerto 5432.
+3. **Construir e Iniciar los Contenedores**
+   ```bash
+   docker-compose up --build
+   ```
+
+4. **Verificar la API**
+   - La aplicación estará disponible en [http://127.0.0.1:8000](http://127.0.0.1:8000).
+   - La documentación interactiva está en [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+
+5. **Verificar el Esquema de la Base de Datos**
+   Ingresar al contenedor de PostgreSQL para verificar las bases de datos y tablas:
+   ```bash
+   docker exec -it gestion_inventario-db-1 psql -U postgres
+   \l  # Listar bases de datos
+
+   \c usuarios  # Conectar a la base de datos "usuarios"
+   \dt  # Listar tablas
+
+   # Conectar a la base de datos "inventario"
+   \c inventario
+   \dt  # Listar tablas en "inventario"
+   ```
+
+---
 
 ## Ejemplos de Uso de la API
 
 ### Registrar un Usuario
 
-##### Método: ```POST```
-##### URL: ```/register/```
-##### Cuerpo:
+#### Método: `POST`
+#### URL: `/register/`
+#### Cuerpo:
 ```json
 {
-  "username": "juanperez",
-  "email": "juan@example.com",
+  "username": "usuario1",
+  "email": "Usuario@example.com",
+  "password": "contraseña123",
+  "role": "user"
+}
+```
+
+### Iniciar Sesión y Obtener Token JWT
+
+#### Método: `POST`
+#### URL: `/login/`
+#### Cuerpo:
+```json
+{
+  "username": "usuario1",
   "password": "contraseña123"
 }
 ```
 
-### Iniciar Sesión (Login) y Obtener Token JWT
-
-##### Método: ```POST```
-##### URL: ```/login/```
-##### Cuerpo:
-```json
-{
-  "username": "juanperez",
-  "password": "contraseña123"
-}
-```
-##### Respuesta:
+#### Respuesta:
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "token_type": "bearer"
 }
+```
+#### Token JWT
+Algunos endpoints requieren autentificación. para acceder a estos endpoints protegidos, es necesario incluir el token JWT.
 
+##### En la documentación interactiva
+Cuando accedas a los endpoints protegidos, verás que puedes incluir el token en la sección de parámetros de consulta (query parameters) bajo la clave token.
+
+##### En postman
+1.Ve a la pestaña Params.
+
+2.Agrega:
+```
+Key: token
+Value: <tu_token_jwt>.
 ```
 
 ### Obtener Productos Filtrados por Precio
 
-##### Método: ```GET```
-##### URL: ```/products/filter/price?min_price=100&max_price=500```
-##### Cuerpo:
+#### Método: `GET`
+#### URL: `/products/filter/price?min_price=100&max_price=500`
+
+#### Respuesta:
 ```json
 [
   {
@@ -137,14 +187,14 @@ La base de datos PostgreSQL estará disponible en el puerto 5432.
     "category_id": 1
   }
 ]
-
 ```
 
 ### Obtener Productos por Categoría
 
-##### Método: ```GET```
-##### URL: ```/products/category/{category_id}```
-##### Cuerpo:
+#### Método: `GET`
+#### URL: `/products/category/{category_id}`
+
+#### Respuesta:
 ```json
 [
   {
@@ -156,3 +206,5 @@ La base de datos PostgreSQL estará disponible en el puerto 5432.
   }
 ]
 ```
+
+

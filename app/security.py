@@ -3,6 +3,7 @@ import datetime
 from passlib.context import CryptContext
 from typing import Optional
 from dotenv import load_dotenv
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 import os
 
 load_dotenv()
@@ -38,7 +39,7 @@ def verify_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         raise Exception("Token ha expirado")
-    except jwt.JWTError:
+    except InvalidTokenError:
         raise Exception("Token inválido")

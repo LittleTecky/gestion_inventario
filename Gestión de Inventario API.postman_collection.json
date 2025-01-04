@@ -399,7 +399,31 @@
 					"name": "Create User",
 					"request": {
 						"method": "POST",
-						"header": []
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"juanperez\",\r\n  \"email\": \"juan@example.com\",\r\n  \"password\": \"contraseña123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -407,7 +431,23 @@
 					"name": "Get User By ID",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -415,7 +455,22 @@
 					"name": "Get Users",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -423,7 +478,32 @@
 					"name": "Update User",
 					"request": {
 						"method": "PUT",
-						"header": []
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"nuevoemail@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -431,7 +511,23 @@
 					"name": "Delete User",
 					"request": {
 						"method": "DELETE",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1",
+								""
+							]
+						}
 					},
 					"response": []
 				}
